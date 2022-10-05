@@ -26,10 +26,10 @@ function mostrarProductos() {
     }
 }
 
-function listarInvertida() {
+function listarInvertido() {
     document.getElementById("product-list").innerHTML = "";
     let lista = inventario.devolverLista();
-    for (let i = lista.length; i > 0; i--) {
+    for (let i = lista.length - 1; i >= 0; i--) {
         const listaProducto = document.getElementById('product-list');
         const element = document.createElement('div');
         element.innerHTML = `
@@ -51,11 +51,11 @@ function buscarUnProducto(codigo) {
     document.getElementById("product-list").innerHTML = "";
     const listaProducto = document.getElementById('product-list');
     const element = document.createElement('div');
-    if (buscar === "Producto no encontrado") {
+    if (buscar === false) {
         element.innerHTML = `
         <div class="card text-center mb-4">
             <div class="card-body">
-                <strong>${buscar}</strong>
+                <strong>Producto no encontrado</strong>
             </div>
         </div>
         `;
@@ -80,11 +80,11 @@ function eliminarProducto(codigo) {
     document.getElementById("product-list").innerHTML = "";
     const listaProducto = document.getElementById('product-list');
     const element = document.createElement('div');
-    if (eliminar === "Producto no encontrado") {
+    if (eliminar === false) {
         element.innerHTML = `
         <div class="card text-center mb-4">
             <div class="card-body">
-                <strong>${eliminar}</strong>
+                <strong>Producto no Encontrado</strong>
             </div>
         </div>
         `;
@@ -93,7 +93,15 @@ function eliminarProducto(codigo) {
         element.innerHTML = `
         <div class="card text-center mb-4">
             <div class="card-body">
-                <strong>Producto eliminado</strong>
+                <strong>Eliminaste el Producto:</strong>
+            </div>
+        </div>
+        <div class="card text-center mb-4">
+            <div class="card-body">
+                <strong>Codigo</strong>: ${eliminar.codigo}
+                <strong>Nombre</strong>: ${eliminar.nombre}
+                <strong>Precio</strong>: ${eliminar.precio}
+                <strong>Cantidad</strong>: ${eliminar.cantidad}
             </div>
         </div>
         `;
@@ -111,16 +119,23 @@ document.getElementById('producto-form')
 
         const producto = new Producto(codigo, nombre, precio, cantidad);
 
-        if (codigo === "" || nombre === "" || precio === "" || cantidad === "") {
-            alert("Por favor llene todos los campos");
+        document.getElementById("product-list").innerHTML = "";
+        const listaProducto = document.getElementById('product-list');
+        const element = document.createElement('div');
+        if (inventario.buscarProducto(codigo) === false) {
+            inventario.addProducto(producto);
+            mostrarProductos();
         } else {
-            if (inventario.buscarProducto(codigo) === "Producto no encontrado") {
-                inventario.addProducto(producto);
-                mostrarProductos();
-            } else {
-                alert("El producto ya existe");
-            }
+            element.innerHTML = `
+                <div class="card text-center mb-4">
+                    <div class="card-body">
+                        <strong>El Producto Ya Existe</strong>
+                    </div>
+                </div>
+                `;
+            listaProducto.appendChild(element)
         }
+
         e.preventDefault();
     });
 
@@ -148,6 +163,6 @@ document.getElementById('producto-Mostrar')
 
 document.getElementById('producto-invertir')
     .addEventListener('submit', function (e) {
-        listarInvertida();
+        listarInvertido();
         e.preventDefault();
     });

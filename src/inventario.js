@@ -27,7 +27,7 @@ export class Inventario {
         for (let i = 0; i < this.listaProductos.length; i++) {
             let aux = this.listaProductos[i].codigo;
             if (Number(aux) === Number(codigo)) {
-                producto = true;
+                producto = this.listaProductos[i];
                 let aux = this.listaProductos[i];
                 for (let j = i; j < this.listaProductos.length - 1; j++) {
                     this.listaProductos[j] = this.listaProductos[j + 1];
@@ -36,26 +36,39 @@ export class Inventario {
                 this.listaProductos.pop();
             }
         }
-        if (producto === false) {
-            return "Producto no encontrado";
-        }
+        return producto;
 
     }
 
+    //busqueda binaria
     buscarProducto(codigo) {
-        let producto;
+        let producto = false;
+        let inicio = 0;
+        let fin = this.listaProductos.length - 1;
+        let mitad = Math.floor((inicio + fin) / 2);
+        while (inicio <= fin) {
+            if (Number(this.listaProductos[mitad].codigo) === Number(codigo)) {
+                producto = this.listaProductos[mitad];
+                break;
+            } else if (Number(this.listaProductos[mitad].codigo) < Number(codigo)) {
+                inicio = mitad + 1;
+            } else {
+                fin = mitad - 1;
+            }
+            mitad = Math.floor((inicio + fin) / 2);
+        }
+        return producto;
+    }
+
+   /* buscarProducto(codigo) {
+        let producto=false;
         for (let i = 0; i < this.listaProductos.length; i++) {
             let aux = this.listaProductos[i].codigo;
             if (Number(aux) === Number(codigo)) {
                 producto = this.listaProductos[i];
             }
         }
-        if (producto === undefined) {
-            return "Producto no encontrado";
-        } else {
-            return producto;
-        }
-    }
-
+        return producto;
+    }*/
 
 }
